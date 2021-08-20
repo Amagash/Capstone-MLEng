@@ -16,7 +16,7 @@ I chose the dataset of [Heart Failure records from Kaggle](https://www.kaggle.co
 Environmental and behavioural risk factors such as tobacco use, unhealthy diet and obesity, physical inactivity and harmful use of alcohol could be used as features for estimation models. Being able to estimate the probability of developping a CVD could be of great help for high risk people.
 
 The Dataset is tabular with 13 columns (12 features and 1 target variable) and contains 299 rows.
-
+kaggle datasets download -d andrewmvd/heart-failure-clinical-data
 ### Task
 *TODO*: Explain the task you are going to be solving with this dataset and the features you will be using for it.
 The task I am trying to solve is to generate a model that predicts if a person might have a heart failure or not. I will be looking at the following features:
@@ -40,9 +40,44 @@ The task I am trying to solve is to generate a model that predicts if a person m
 
 ### Access
 *TODO*: Explain how you are accessing the data in your workspace.
-To access the data
+The are several ways to access the data in the workspace. Once the data is uploaded to Azure ML, we can access it through the key we gave it. Here my dataset `key = 'heart_failure_records'`, so I can retrieve the dataset using the following command:
+`dataset = ws.datasets[key] `
+
+Once the dataset is loaded, I can use it as a pandas dataframe for further exploration.
 ## Automated ML
 *TODO*: Give an overview of the `automl` settings and configuration you used for this experiment
+Here are the automl settings I choose:
+```python
+automl_settings = {
+    "experiment_timeout_minutes": 20,
+    "max_concurrent_iterations": 5,
+    "primary_metric" : 'accuracy'
+}
+```
+
+| parameter | description | value |
+|-----------|-------------|-------|
+| experiment_timeout_minutes | The maximum amount of time (in minutes) that the experiment is allowed to run before it is automatically stopped and results are automatically made available. | 20 |
+| max_concurrent_iterations | The maximum number of concurrent training iterations allowed for the experiment. | 5 |
+| primary_metric | The primary metric used to determine the experiment's status. | accuracy |
+
+Here is the automl config I choose:
+
+```python
+automl_config = AutoMLConfig(
+    task='classification',
+    training_data=dataset,
+    label_column_name='DEATH_EVENT',
+    n_cross_validations=5,
+    **automl_settings
+)
+```
+| parameter | description | value |
+|-----------|-------------|-------|
+| task | The type of task to be solved. | classification |
+| training_data | The dataset to be used for training. | dataset |
+| label_column_name | The name of the column containing the label. | DEATH_EVENT |
+| n_cross_validations | The number of cross-validations to be performed. | 5 |
 
 ### Results
 *TODO*: What are the results you got with your automated ML model? What were the parameters of the model? How could you have improved it?
