@@ -55,7 +55,7 @@ automl_settings = {
 }
 ```
 
-| parameter | description | value |
+| Parameter | Description | Value |
 |-----------|-------------|-------|
 | experiment_timeout_minutes | The maximum amount of time (in minutes) that the experiment is allowed to run before it is automatically stopped and results are automatically made available. | 20 |
 | max_concurrent_iterations | The maximum number of concurrent training iterations allowed for the experiment. | 5 |
@@ -65,18 +65,26 @@ Here is the automl config I choose:
 
 ```python
 automl_config = AutoMLConfig(
+    compute_target=compute_target,
     task='classification',
     training_data=dataset,
     label_column_name='DEATH_EVENT',
+    enable_early_stopping= True,
+    featurization= 'auto',
+    debug_log = "automl_errors.log",
     n_cross_validations=5,
     **automl_settings
 )
 ```
-| parameter | description | value |
+| Parameter | Description | Value |
 |-----------|-------------|-------|
+| compute_target | The compute instance that will run the job | compute_target |
 | task | The type of task to be solved. | classification |
 | training_data | The dataset to be used for training. | dataset |
 | label_column_name | The name of the column containing the label. | DEATH_EVENT |
+| enable_early_stopping | Enable early stopping. | True |
+| featurization | The featurization method to be used. | auto |
+| debug_log | The path to the log file. | automl_errors.log |
 | n_cross_validations | The number of cross-validations to be performed. | 5 |
 
 ### Results
