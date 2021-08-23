@@ -1,16 +1,14 @@
-*NOTE:* This file is a template that you can use to create the README for your project. The *TODO* comments below will highlight the information you should be sure to include.
-test
 # Heart Failure Prediction
 
-*TODO:* Write a short introduction to your project.
+Cardiovascular diseases (CVDs) are the number 1 cause of death globally, accounting for 31% of all deaths worlwide. Environmental and behavioural risk factors such as tobacco use, unhealthy diet and obesity, physical inactivity and harmful use of alcohol could be used as features for estimation models. Being able to estimate the probability of developping a CVD could be of great help for high risk people.
+
+This project aims to predict the probability of dying from heart failure.
 ## Dataset
 
 ### Overview
-I chose the dataset of [Heart Failure records from Kaggle](https://www.kaggle.com/andrewmvd/heart-failure-clinical-data) because it has a high usability score of 10 meaning that the dataset is easy to understand, machine readable, includes essential metadata and is maintained. It is also a very interesting topic. According to Kaggle, Cardiovascular diseases (CVDs) are the number 1 cause of death globally, accounting for 31% of all deaths worlwide. 
+I chose the dataset of [Heart Failure records from Kaggle](https://www.kaggle.com/andrewmvd/heart-failure-clinical-data) because it has a high usability score of 10 meaning that the dataset is easy to understand, machine readable, includes essential metadata and is maintained. 
 
-Environmental and behavioural risk factors such as tobacco use, unhealthy diet and obesity, physical inactivity and harmful use of alcohol could be used as features for estimation models. Being able to estimate the probability of developping a CVD could be of great help for high risk people.
-
-The Dataset is tabular with 13 columns (12 features and 1 target variable) and contains 299 rows.
+The Dataset is tabular with 13 columns (12 features and 1 target variable) and contains 299 rows. We will see each feature in detail in the following section.
 ### Task
 The task I am trying to solve is to generate a model that predicts if a person might have a heart failure or not. I will be looking at the following features:
 
@@ -132,7 +130,6 @@ Because we enabled the featurization, we were able to see in Data guardrails the
 The AutoML run could also be extended with different experiment timeout to see if the performance could be improved.
 
 ## Hyperparameter Tuning
-*TODO*: What kind of model did you choose for this experiment and why? Give an overview of the types of parameters and their ranges used for the hyperparameter search
 
 I chose the ScikitLearn Logistic regression because, despite its name, it is a linear model for classification rather than regression. Logistic regression is also known in the literature as logit regression, maximum-entropy classification (MaxEnt) or the log-linear classifier. In this model, the probabilities describing the possible outcomes. It is therefore well suited for the prediction of heart failure.
 
@@ -144,7 +141,6 @@ I chose the following parameters:
 | max_iter | The maximum number of iterations. | choice(100, 150, 200, 250, 300, 400) |
 
 ### Results
-*TODO*: What are the results you got with your model? What were the parameters of the model? How could you have improved it?
 
 Here is the description of the Best model:
 
@@ -157,9 +153,17 @@ Here is a screenshot of the `RunDetails` widget:
 
 ![9](img/9.PNG)
 
-*TODO* Remeber to provide screenshots of the `RunDetails` widget as well as a screenshot of the best model trained with it's parameters.
-
-
 To improve the model, we could try the solver parameter which is an lgorithm to use in the optimization problem. More specifically, we could try the liblinear solver which is a good choice for small dataset like ours.
 
 We could also test other algorithms such as the `sklearn.ensemble.VotingClassifier`. The idea behind the VotingClassifier is to combine conceptually different machine learning classifiers and use a majority vote or the average predicted probabilities (soft vote) to predict the class labels. Such a classifier can be useful for a set of equally well performing model in order to balance out their individual weaknesses. 
+
+
+### Model Deployment
+
+I chose to deploy the AutoML Model because the accuracy was better. 
+Here is a screenshot of the endpoint deployed:
+
+![10](img/10.PNG)
+
+### Screencast
+Here you can find the screencast link : https://youtu.be/Jw9mhUn6si4
