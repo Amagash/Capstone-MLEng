@@ -134,21 +134,32 @@ The AutoML run could also be extended with different experiment timeout to see i
 ## Hyperparameter Tuning
 *TODO*: What kind of model did you choose for this experiment and why? Give an overview of the types of parameters and their ranges used for the hyperparameter search
 
+I chose the ScikitLearn Logistic regression because, despite its name, it is a linear model for classification rather than regression. Logistic regression is also known in the literature as logit regression, maximum-entropy classification (MaxEnt) or the log-linear classifier. In this model, the probabilities describing the possible outcomes. It is therefore well suited for the prediction of heart failure.
+
+I chose the following parameters:
+
+| parameter | Description | Value |
+|-----------|-------------|-------|
+| C | Inverse of regularization strength; must be a positive float. Like in support vector machines, smaller values specify stronger regularization. | uniform(0.2, 5) |
+| max_iter | The maximum number of iterations. | choice(100, 150, 200, 250, 300, 400) |
 
 ### Results
 *TODO*: What are the results you got with your model? What were the parameters of the model? How could you have improved it?
 
+Here is the description of the Best model:
+
+![8](img/8.PNG)
+
+We see an accuracy of 83.3% and the best hyperparameters are : {"--C": 2.9836277484604428, "--max_iter": 200}
+The accuracy for the best model in the automl run was 85.6% which is better than the best model found with the hyperparameter tuning. Therefore I chose to deploy the autoML model.
+
+Here is a screenshot of the `RunDetails` widget:
+
+![9](img/9.PNG)
+
 *TODO* Remeber to provide screenshots of the `RunDetails` widget as well as a screenshot of the best model trained with it's parameters.
 
-## Model Deployment
-*TODO*: Give an overview of the deployed model and instructions on how to query the endpoint with a sample input.
 
-## Screen Recording
-*TODO* Provide a link to a screen recording of the project in action. Remember that the screencast should demonstrate:
-- A working model
-- Demo of the deployed  model
-- Demo of a sample request sent to the endpoint and its response
+To improve the model, we could try the solver parameter which is an lgorithm to use in the optimization problem. More specifically, we could try the liblinear solver which is a good choice for small dataset like ours.
 
-## Standout Suggestions
-*TODO (Optional):* This is where you can provide information about any standout suggestions that you have attempted.
-test
+We could also test other algorithms such as the `sklearn.ensemble.VotingClassifier`. The idea behind the VotingClassifier is to combine conceptually different machine learning classifiers and use a majority vote or the average predicted probabilities (soft vote) to predict the class labels. Such a classifier can be useful for a set of equally well performing model in order to balance out their individual weaknesses. 
