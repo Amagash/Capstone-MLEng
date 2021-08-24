@@ -1,75 +1,66 @@
-import requests
+import urllib.request
 import json
-from dotenv import load_dotenv
 import os
+import ssl
 
-load_dotenv('../.env')
-# URL for the web service, should be similar to:
-# 'http://8530a665-66f3-49c8-a953-b82a2d312917.eastus.azurecontainer.io/score'
-# If the service is authenticated, set the key or token
+def allowSelfSignedHttps(allowed):
+    # bypass the server certificate verification on client side
+    if allowed and not os.environ.get('PYTHONHTTPSVERIFY', '') and getattr(ssl, '_create_unverified_context', None):
+        ssl._create_default_https_context = ssl._create_unverified_context
 
-scoring_uri = str(os.getenv('SCORING_URI'))
-key = str(os.getenv('KEY'))
+allowSelfSignedHttps(True) # this line is needed if you use self-signed certificate in your scoring service.
 
-# Two sets of data to score, so we get two results back
-data = {"data":
-        [
-          {
-            'age': 17,
-            'job': "blue-collar",
-            'marital': "married",
-            'education': "university.degree",
-            'default': "no",
-            'housing': "yes",
-            'loan': "yes",
-            'contact': "cellular",
-            'month': "may",
-            'day_of_week': "mon",
-            'duration': 971,
-            'campaign': 1,
-            'pdays': 999,
-            'previous': 1,
-            'poutcome': "failure",
-            'emp.var.rate': -1.8,
-            'cons.price.idx': 92.893,
-            'cons.conf.idx': -46.2,
-            'euribor3m': 1.299,
-            'nr.employed': 5099.1
-          },
-          {
-            'age': 87,
-            'campaign': 1,
-            'cons.conf.idx': -46.2,
-            'cons.price.idx': 92.893,
-            'contact': "cellular",
-            'day_of_week': "mon",
-            'default': "no",
-            'duration': 471,
-            'education': "university.degree",
-            'emp.var.rate': -1.8,
-            'euribor3m': 1.299,
-            'housing': "yes",
-            'job': "blue-collar",
-            'loan': "yes",
-            'marital': "married",
-            'month': "may",
-            'nr.employed': 5099.1,
-            'pdays': 999,
-            'poutcome': "failure",
-            'previous': 1
-          },
-      ]
-    }
-# Convert to JSON string
-input_data = json.dumps(data)
-with open("data.json", "w") as _f:
-    _f.write(input_data)
+# Request data goes here
+data = {
+    "data":
+    [
+        {
+            'age': "0",
+            'anaemia': "false",
+            'creatinine_phosphokinase': "0",
+            'diabetes': "false",
+            'ejection_fraction': "0",
+            'high_blood_pressure': "false",
+            'platelets': "0",
+            'serum_creatinine': "0",
+            'serum_sodium': "0",
+            'sex': "false",
+            'smoking': "false",
+            'time': "0",
+        },
+        {
+            'age': "60",
+            'anaemia': "false",
+            'creatinine_phosphokinase': "500",
+            'diabetes': "false",
+            'ejection_fraction': "38",
+            'high_blood_pressure': "false",
+            'platelets': "260000",
+            'serum_creatinine': "1.40",
+            'serum_sodium': "137",
+            'sex': "false",
+            'smoking': "false",
+            'time': "130",
+        },
+    ],
+}
 
-# Set the content type
-headers = {'Content-Type': 'application/json'}
-# If authentication is enabled, set the authorization header
-headers['Authorization'] = f'Bearer {key}'
+body = str.encode(json.dumps(data))
 
-# Make the request and display the response
-resp = requests.post(scoring_uri, input_data, headers=headers)
-print(resp.json())
+url = 'http://98e3715f-aef0-4736-96b9-9ec22d57b796.centralus.azurecontainer.io/score'
+api_key = '' # Replace this with the API key for the web service
+headers = {'Content-Type':'application/json', 'Authorization':('Bearer '+ api_key)}
+
+req = urllib.request.Request(url, body, headers)
+
+try:
+    response = urllib.request.urlopen(req)
+
+    result = response.read()
+    print(result)
+except urllib.error.HTTPError as error:
+    print("The request failed with status code: " + str(error.code))
+
+    # Print the headers - they include the requert ID and the timestamp, which are useful for debugging the failure
+    print(error.info())
+    print(json.loads(error.read().decode("utf8", 'ignore')))
